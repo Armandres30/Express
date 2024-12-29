@@ -2,6 +2,8 @@ const express = require('express');
 const { faker } = require("@faker-js/faker");
 
 const ProductService = require('./../services/product.service');
+const validatorHandler = require('./../middleware/validator.handler');
+const { createProductSchema, updateProductSchema, getProductSchema } = require('./../schemas/product.schema');
 
 const router = express.Router();
 const service = new ProductService();
@@ -16,7 +18,9 @@ router.get('/filter', (req, res) => {
   res.send('I am a filter');
 })
 // use GET variables in url as ":id" with "req.params"
-router.get('/:id', async (req, res, next) => {
+router.get('/:id',
+validatorHandler(getProductSchema, 'params'),
+async (req, res, next) => {
   try{
     const {id} = req.params;
   const product = await service.findOne(id);
@@ -26,7 +30,9 @@ router.get('/:id', async (req, res, next) => {
   }
 })
 
-router.post('/', async (req,res) => {
+router.post('/',
+  validatorHandler(createProductSchema, 'body'),
+  async (req,res) => {
   const body = req.body;
   const newProduct = await service.create(body);
     res.status(201).json({
@@ -35,7 +41,10 @@ router.post('/', async (req,res) => {
     })
 })
 
-router.patch('/:id', async (req,res) => {
+router.patch('/:id',
+  validatorHandler(getProductSchema, 'params'),
+  validatorHandler(updateProductSchema, 'body'),
+  async (req,res, next) => {
   try {
     const { id } = req.params
     const body = req.body;
