@@ -6,6 +6,17 @@ app.get('/', (req, res) => {
   res.send('Hi my server in express');
 })
 
+app.get('/new-route', (req, res) => {
+  res.send('Hi, I am a new route');
+})
+
+app.get('/products', (req, res) => {
+  res.json({
+    name: 'Product 1',
+    price: 1000
+  });
+})
+
 app.listen(port, () => {
   console.log('My port' + port);
 })
