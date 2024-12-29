@@ -1,7 +1,7 @@
 const express = require('express');
 const routerApi = require('./routes');
 
-const { logErrors, errorHandler } = require('./middleware/error.handler');
+const { logErrors, errorHandler, boomErrorHandler } = require('./middleware/error.handler');
 
 const app = express();
 const port = 3000;
@@ -18,8 +18,10 @@ app.get('/new-route', (req, res) => {
 
 routerApi(app);
 
+//Order affects Errors logs response
 app.use(logErrors);
-app.use(errorHandler);
+app.use(boomErrorHandler); //shows boom Error Handling which are shorter and more concise
+app.use(errorHandler); //shows full errors
 
 app.listen(port, () => {
   console.log('My port' + port);
